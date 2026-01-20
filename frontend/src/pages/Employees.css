@@ -1,0 +1,92 @@
+/* ===== Page Container ===== */
+.page-container {
+  padding: 40px 48px;
+  background: linear-gradient(180deg, #f4f6f8, #eef2f7);
+  min-height: 100vh;
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+}
+
+/* ===== Header ===== */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 20px;
+}
+
+.page-container h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ===== Buttons ===== */
+.page-container button {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.page-container button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(37, 99, 235, 0.45);
+}
+
+.page-container button:active {
+  transform: scale(0.96);
+}
+
+/* ===== Table Wrapper ===== */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* ===== Status Text ===== */
+.status-text {
+  text-align: center;
+  margin-top: 48px;
+  font-size: 17px;
+  color: #6b7280;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  .page-container {
+    padding: 28px 20px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-container h2 {
+    font-size: 22px;
+  }
+
+  .page-container button {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding: 18px 14px;
+  }
+
+  .page-container h2 {
+    font-size: 20px;
+  }
+}
+

@@ -1,0 +1,88 @@
+/* ===== Table Container ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 32px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== Table Header ===== */
+th {
+  background: linear-gradient(180deg, #f8fafc, #eef2f7);
+  padding: 20px 18px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: left;
+  color: #111827;
+  letter-spacing: 0.4px;
+}
+
+/* ===== Table Data Cells ===== */
+td {
+  padding: 18px;
+  border-bottom: 1px solid #f1f1f1;
+  font-size: 15px;
+  color: #374151;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* Alternate row background */
+tr:nth-child(even) {
+  background-color: #fcfcfd;
+}
+
+/* Hover ONLY on single cell */
+td:hover {
+  background-color: #eef4ff;
+  color: #1e3a8a;
+}
+
+/* Center action buttons */
+td:last-child,
+td:nth-last-child(2) {
+  text-align: center;
+}
+
+/* ===== Buttons ===== */
+button {
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Edit Button */
+button:first-of-type {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: white;
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.35);
+}
+
+button:first-of-type:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.45);
+}
+
+/* Delete Button */
+button:last-of-type {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: white;
+  box-shadow: 0 6px 14px rgba(220, 38, 38, 0.35);
+}
+
+button:last-of-type:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(220, 38, 38, 0.45);
+}
+
+button:active {
+  transform: scale(0.95);
+}

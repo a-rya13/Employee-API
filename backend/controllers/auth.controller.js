@@ -6,40 +6,47 @@ import Employee from "../models/employee.model.js";
 
 export const registerEmployee = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { employeeId, firstName, lastName, email, password, role } = req.body;
 
-    // 1. Validate input
-    if (!name || !email || !password) {
+    //  Validate input ((matches the schema/model)
+    if (!employeeId || !firstName || !lastName || !email || !password) {
       return res.status(400).json({
-        message: "Name, email and password are required",
+        message: "All fields are required",
       });
     }
 
-    // 2. Check if employee already exists
-    const existingEmployee = await Employee.findOne({ email });
+    //  Check if employee already exists
+    const existingEmployee = await Employee.findOne({
+      $or: [{ email }, { employeeId }],
+    });
+
     if (existingEmployee) {
       return res.status(400).json({
         message: "Employee already registered",
       });
     }
 
-    // 3. Hash password
-    const hashedPassword = await bcrypt.hash(password, 10); //add salting 10 rounds
+    //  Hash password
+    const hashedPassword = await bcrypt.hash(password, 10); //added salting
 
-    // 4. Create employee and saves employee in DB
+    //  Create employee
     const employee = await Employee.create({
-      name,
+      employeeId,
+      firstName,
+      lastName,
       email,
       password: hashedPassword,
       role: role || "EMPLOYEE",
     });
 
-    // 5. Send response
+    //  Send response
     res.status(201).json({
       message: "Employee registered successfully",
       employee: {
         id: employee._id,
-        name: employee.name,
+        employeeId: employee.employeeId,
+        firstName: employee.firstName,
+        lastName: employee.lastName,
         email: employee.email,
         role: employee.role,
       },
@@ -52,28 +59,29 @@ export const registerEmployee = async (req, res) => {
   }
 };
 
-// LOGIN CONTROLLER
+//  login controller
 
 export const loginEmployee = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 1. Validate input
+    //  Validate input
     if (!email || !password) {
       return res.status(400).json({
         message: "Email and password are required",
       });
     }
 
-    // 2. Find employee
-    const employee = await Employee.findOne({ email });
+    //  Find employee (explicitly select password)
+    const employee = await Employee.findOne({ email }).select("+password");
+
     if (!employee) {
       return res.status(401).json({
         message: "Invalid email or password",
       });
     }
 
-    // 3. Compare password
+    //  Compare password
     const isPasswordMatch = await bcrypt.compare(password, employee.password);
 
     if (!isPasswordMatch) {
@@ -82,7 +90,7 @@ export const loginEmployee = async (req, res) => {
       });
     }
 
-    // 4. Generate JWT
+    //  Generate JWT
     const token = jwt.sign(
       {
         id: employee._id,
@@ -90,17 +98,19 @@ export const loginEmployee = async (req, res) => {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "1d", //expires in one day
+        expiresIn: "1d", //password is valid for 1 day
       },
     );
 
-    // 5. Send response
+    //  Send response
     res.status(200).json({
       message: "Login successful",
       token,
       employee: {
         id: employee._id,
-        name: employee.name,
+        employeeId: employee.employeeId,
+        firstName: employee.firstName,
+        lastName: employee.lastName,
         email: employee.email,
         role: employee.role,
       },

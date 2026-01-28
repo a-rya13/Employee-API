@@ -2,12 +2,10 @@ import mongoose from "mongoose";
 
 const employeeSchema = new mongoose.Schema(
   {
-    //Business Employee ID
-    //this block will help to restrict the change of employee id after it is created
     employeeId: {
       type: Number,
       required: function () {
-        return this.isNew; // required ONLY on CREATE
+        return this.isNew;
       },
       unique: true,
     },
@@ -19,6 +17,18 @@ const employeeSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+    },
+
+    password: {
+      type: String,
+      required: true,
+      select: false,
+    },
+
+    role: {
+      type: String,
+      enum: ["ADMIN", "HR", "EMPLOYEE"],
+      default: "EMPLOYEE",
     },
 
     dob: { type: Date },
@@ -33,8 +43,8 @@ const employeeSchema = new mongoose.Schema(
     updatedBy: { type: String },
   },
   {
-    timestamps: true, // creates createdAt & updatedAt automatically
-  }
+    timestamps: true,
+  },
 );
 
 export default mongoose.model("Employee", employeeSchema);

@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import "../components/EmployeeForm.css";
 
 const EmployeeForm = ({ employee, onSave, onCancel }) => {
+  const isEditMode = Boolean(employee);
+
   const [formData, setFormData] = useState({
     employeeId: "",
     firstName: "",
     lastName: "",
     email: "",
+    password: "",
     dob: "",
     phone: "",
     isActive: true,
@@ -14,15 +17,13 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
     updatedBy: "",
   });
 
-  //  Error state for inline validation
-  const [errors, setErrors] = useState({
-    dob: "",
-  });
+  const [errors, setErrors] = useState({ dob: "" });
 
-  // Prefill form when employee changes (EDIT MODE)
+  // Prefill form when editing
   useEffect(() => {
     if (employee) {
-      setFormData({
+      setFormData((prev) => ({
+        ...prev,
         employeeId: employee.employeeId || "",
         firstName: employee.firstName || "",
         lastName: employee.lastName || "",
@@ -32,7 +33,8 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
         isActive: employee.isActive ?? true,
         createdBy: employee.createdBy || "",
         updatedBy: employee.updatedBy || "",
-      });
+        password: "", // keep empty in edit mode
+      }));
     }
   }, [employee]);
 
@@ -44,13 +46,11 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
       [name]: type === "checkbox" ? checked : value,
     }));
 
-    // Clear error when user starts correcting
     if (name === "dob") {
       setErrors((prev) => ({ ...prev, dob: "" }));
     }
   };
 
-  // Inline DOB validation (NO alerts)
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -71,7 +71,6 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
         ) {
           age--;
         }
-
         if (age < 18) {
           dobError = "Employee must be at least 18 years old";
         }
@@ -83,17 +82,38 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
       return;
     }
 
-    onSave(formData);
-  };
+    // Build payload correctly
+    const payload = isEditMode
+      ? {
+          employeeId: Number(formData.employeeId),
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          dob: formData.dob,
+          phone: formData.phone,
+          isActive: formData.isActive,
+          updatedBy: formData.updatedBy,
+        }
+      : {
+          employeeId: Number(formData.employeeId),
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          password: formData.password, // REQUIRED ON CREATE
+          dob: formData.dob,
+          phone: formData.phone,
+          isActive: formData.isActive,
+          createdBy: formData.createdBy,
+        };
 
-  const isEditMode = Boolean(employee);
+    onSave(payload);
+  };
 
   return (
     <div>
       <h3>{isEditMode ? "Edit Employee" : "Create Employee"}</h3>
 
       <form onSubmit={handleSubmit}>
-        {/* Employee ID */}
         <div>
           <label>Employee ID:</label>
           <input
@@ -102,7 +122,6 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
             onChange={handleChange}
             required
             disabled={isEditMode}
-            placeholder="Enter employee ID"
           />
         </div>
 
@@ -137,7 +156,20 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
           />
         </div>
 
-        {/*  DOB with inline error */}
+        {/*  PASSWORD ONLY FOR CREATE */}
+        {!isEditMode && (
+          <div>
+            <label>Password:</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        )}
+
         <div>
           <label>Date of Birth:</label>
           <input
@@ -147,17 +179,7 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
             onChange={handleChange}
             max={new Date().toISOString().split("T")[0]}
           />
-          {errors.dob && (
-            <p
-              style={{
-                color: "#dc2626",
-                fontSize: "13px",
-                marginTop: "6px",
-              }}
-            >
-              {errors.dob}
-            </p>
-          )}
+          {errors.dob && <p style={{ color: "#dc2626" }}>{errors.dob}</p>}
         </div>
 
         <div>
@@ -175,25 +197,6 @@ const EmployeeForm = ({ employee, onSave, onCancel }) => {
             />
             Active
           </label>
-        </div>
-
-        <div>
-          <label>Created By:</label>
-          <input
-            name="createdBy"
-            value={formData.createdBy}
-            onChange={handleChange}
-            disabled
-          />
-        </div>
-
-        <div>
-          <label>Updated By:</label>
-          <input
-            name="updatedBy"
-            value={formData.updatedBy}
-            onChange={handleChange}
-          />
         </div>
 
         <div style={{ marginTop: "15px" }}>

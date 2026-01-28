@@ -38,7 +38,7 @@ export const registerEmployee = async (req, res) => {
       password: hashedPassword,
       role: role || "EMPLOYEE",
     });
-
+    console.log(hashedPassword);
     //  Send response
     res.status(201).json({
       message: "Employee registered successfully",
@@ -77,6 +77,7 @@ export const loginEmployee = async (req, res) => {
 
     if (!employee) {
       return res.status(401).json({
+        data: employee,
         message: "Invalid email or password",
       });
     }
@@ -86,6 +87,7 @@ export const loginEmployee = async (req, res) => {
 
     if (!isPasswordMatch) {
       return res.status(401).json({
+        data: employee,
         message: "Invalid email or password",
       });
     }
